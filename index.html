@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
+        <title>Happy Birthday!</title>
+        <style>
+            *{
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            
+            
+            html, body{
+                height: 100%;
+                margin: 0;
+            }
+            
+            body{
+                align-items: center;
+                background-color: rgb(221, 239, 89);
+                display: flex;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            
+            }
+            .container{
+                color: #333;
+                margin: 0 auto;
+                text-align: center;
+            }
+            h1{
+                font-weight: normal;
+                letter-spacing: .125rem;
+                text-transform: uppercase;
+            }
+            
+            li{
+                display: inline-block;
+                font-size: 1.5rem;
+                list-style-type:none ;
+                padding: 1em;
+                text-transform: uppercase;
+            }
+            
+            li span{
+                display: block;
+                font-size: 4.5rem;
+            
+            }
+            
+            .emoji{
+                display: none;
+                padding: 1rem;
+            }
+            
+            .emoji span{
+                font-size: 4rem;
+                padding: 0 .5rem;
+            }   
+            
+            #headline {
+                font: inherit;
+                box-sizing: border-box;
+                margin: 0;
+                font-size: 3rem;
+                padding: 0.3em 1.5em;
+                font-weight: bold;
+                border: none;
+                background-color: hsl(211, 100%, 36%);
+                color: hsl(211, 100%, 98%);
+                box-shadow: 0.3em 0.3em hsl(211, 100%, 16%);
+                transition: transform 250ms ease-in-out,
+                  box-shadow 250ms ease-in-out 10ms;
+                cursor: pointer;
+              }
+
+        </style>
+      </head>
+      <body>
+        <canvas id="canvas" style="position: absolute;"></canvas>
+        <div class="container">
+            <button id="headline">Time left for you to turn <span style="color: red">23</span></button>
+            <div id="countdown">
+          <ul>
+          <li><span id="hours"></span> Hours</li>
+          <li><span id="minutes"></span> Minutes</li>
+          <li><span id="seconds"></span> Seconds</li>
+          </ul>
+           </div>
+          
+          <div id="content" class="emoji">
+            <span>it's your birthday</span>
+          </div>
+          
+          
+          
+          </div>
+          
+          <script>
+            (function () {
+                const second = 1000,
+                      minute = second * 60,
+                      hour = minute * 60,
+                      day = hour * 24;
+              
+                let birthday = "Oct 2, 2022 00:00:00",
+                    countDown = new Date(birthday).getTime(),
+                    x = setInterval(function() {    
+              
+                      let now = new Date().getTime(),
+                          distance = countDown - now;
+              
+                      
+                        document.getElementById("hours").innerText = Math.floor((distance % (day)) / (hour)),
+                        document.getElementById("minutes").innerText = Math.floor((distance % (hour)) / (minute)),
+                        document.getElementById("seconds").innerText = Math.floor((distance % (minute)) / second);
+              
+                      //do something later when date is reached
+                      if (distance < 0) {
+                        window.location.href = "./bday.html";
+              
+                        clearInterval(x);
+                      }
+                      //seconds
+                    }, 0)
+                }());
+            window.onload = function () {
+        
+                var canvas = document.getElementById("canvas");
+                var ctx = canvas.getContext("2d");
+        
+                var W = window.innerWidth;
+                var H = window.innerHeight;
+                canvas.width = W;
+                canvas.height = H;
+            
+                var mp = 500; 
+                var particles = [];
+                for (var i = 0; i < mp; i++) {
+                    particles.push({
+                        x: Math.random() * W, 
+                        y: Math.random() * H, 
+                        r: Math.random() * 15 + 1, 
+                        d: Math.random() * mp, 
+                        color: "rgba(" + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", 0.8)",
+                        tilt: Math.floor(Math.random() * 5) - 5
+                    });
+                }
+            
+                function draw() {
+                    ctx.clearRect(0, 0, W, H);
+            
+            
+            
+                    for (var i = 0; i < mp; i++) {
+                        var p = particles[i];
+                        ctx.beginPath();
+                        ctx.lineWidth = p.r;
+                        ctx.strokeStyle = p.color; // Green path
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x + p.tilt + p.r / 2, p.y + p.tilt);
+                        ctx.stroke(); // Draw it
+                    }
+            
+                    update();
+                }
+            
+                var angle = 0;
+            
+                function update() {
+                    angle += 0.01;
+                    for (var i = 0; i < mp; i++) {
+                        var p = particles[i];
+                        
+                        p.y += Math.cos(angle + p.d) + 1 + p.r / 2;
+                        p.x += Math.sin(angle) * 2;
+        
+                        if (p.x > W + 5 || p.x < -5 || p.y > H) {
+                            if (i % 3 > 0) //66.67% of the flakes
+                            {
+                                particles[i] = {
+                                    x: Math.random() * W,
+                                    y: -10,
+                                    r: p.r,
+                                    d: p.d,
+                                    color: p.color,
+                                    tilt: p.tilt
+                                };
+                            } else {
+                                if (Math.sin(angle) > 0) {
+                                    //Enter from the left
+                                    particles[i] = {
+                                        x: -5,
+                                        y: Math.random() * H,
+                                        r: p.r,
+                                        d: p.d,
+                                        color: p.color,
+                                        tilt: p.tilt
+                                    };
+                                } else {
+                                    particles[i] = {
+                                        x: W + 5,
+                                        y: Math.random() * H,
+                                        r: p.r,
+                                        d: p.d,
+                                        color: p.color,
+                                        tilt: p.tilt
+                                    };
+                                }
+                            }
+                        }
+                    }
+                }
+                setInterval(draw, 20);
+            }
+
+
+            const jsConfetti = new JSConfetti();
+      document.querySelector("#headline").addEventListener("click", async () => {
+        await jsConfetti.addConfetti({
+          emojis: ["🎉", "🥳", "🎈"],
+          emojiSize: 50,
+          confettiNumber: 150,
+          confettiColors: [
+            "#ff0a54",
+            "#ff477e",
+            "#ff7096",
+            "#ff85a1",
+            "#fbb1bd",
+            "#f9bec7",
+          ],
+        });
+        window.location.reload();
+      });
+          </script>
+      
+      
+</body>
+
+  </html>
